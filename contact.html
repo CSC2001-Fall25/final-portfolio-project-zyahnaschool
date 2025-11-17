@@ -4,17 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styleproject.css" />
 </head>
 <body>
   <nav class="nav">
-    <a href="./">Home</a>
+    <a href="indexproject.html">Home</a>
     <a href="./projects.html">Projects</a>
     <a class="active" href="./contact.html">Contact</a>
   </nav>
 
   <main class="stack">
-    <form id="contactForm">
+    <form name="contact" method="POST" data-netlify="true" id="contactForm">
+      <input type="hidden" name="form-name" value="contact">
+
       <label>Name <input name="name" required></label>
       <label>Email <input name="email" type="email" required></label>
       <label>Message <textarea name="message" rows="5" required></textarea></label>
@@ -24,23 +26,36 @@
   </main>
 
   <script type="module">
-    // Example AJAX submit to a public echo service (or replace with Netlify Forms / SheetDB)
     const form = document.getElementById('contactForm');
     const status = document.getElementById('status');
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       status.textContent = 'Sending…';
+
+      const formData = new FormData(form);
+      const isNetlify = location.hostname.includes('netlify.app');
+
       try {
-        const res = await fetch('https://httpbin.org/post', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(Object.fromEntries(new FormData(form)))
-        });
-        if (!res.ok) throw new Error('Network error');
-        status.textContent = 'Sent! (Demo)';
-        form.reset();
+        if (isNetlify) {
+          // Submit to Netlify when deployed
+          const res = await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(formData).toString()
+          });
+          if (!res.ok) throw new Error('Network error');
+          status.textContent = 'Sent! Thank you.';
+          form.reset();
+        } else {
+          // Local demo mode
+          console.log('Form data (demo):', Object.fromEntries(formData));
+          status.textContent = 'Sent! (Local demo, will work when deployed to Netlify)';
+          form.reset();
+        }
       } catch (err) {
-        status.textContent = 'Failed to send.';
+        status.textContent = 'Failed to send. Please try again.';
+        console.error(err);
       }
     });
   </script>
