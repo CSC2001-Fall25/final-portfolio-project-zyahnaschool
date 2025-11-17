@@ -12,7 +12,6 @@ async function getWeather() {
   error.textContent = "";
 
   try {
-    // 1️⃣ Geocoding
     const geoURL = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`;
     const geoRes = await fetch(geoURL);
     const geoData = await geoRes.json();
@@ -26,13 +25,11 @@ async function getWeather() {
     const lon = place.longitude;
     const cityName = place.name;
 
-    // 2️⃣ Current weather
     const weatherURL = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
     const weatherRes = await fetch(weatherURL);
     const weatherData = await weatherRes.json();
     const current = weatherData.current_weather;
 
-    // 3️⃣ Update UI
     document.getElementById("cityName").textContent = cityName;
     document.getElementById("temp").textContent = `Temperature: ${current.temperature}°C`;
     document.getElementById("windspeed").textContent = `Wind Speed: ${current.windspeed} km/h`;
@@ -48,7 +45,6 @@ async function getWeather() {
   }
 }
 
-// Map weather codes to human-readable conditions
 function interpretWeatherCode(code) {
   const codes = {
     0: "Clear",
