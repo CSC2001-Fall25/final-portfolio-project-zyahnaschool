@@ -3,7 +3,6 @@ const taskList = document.getElementById("taskList");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-// Render tasks
 function renderTasks() {
   taskList.innerHTML = "";
   tasks.forEach((task, index) => {
@@ -17,7 +16,6 @@ function renderTasks() {
   });
 }
 
-// Add task
 function addTask() {
   const text = taskInput.value.trim();
   if (!text) return;
@@ -27,24 +25,20 @@ function addTask() {
   renderTasks();
 }
 
-// Toggle completed
 function toggleComplete(index) {
   tasks[index].completed = !tasks[index].completed;
   saveTasks();
   renderTasks();
 }
 
-// Delete task
 function deleteTask(index) {
   tasks.splice(index, 1);
   saveTasks();
   renderTasks();
 }
 
-// Save to localStorage
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// Initial render
 renderTasks();
